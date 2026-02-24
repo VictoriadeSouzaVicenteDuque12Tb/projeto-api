@@ -1,125 +1,164 @@
 const API_URL = 'http://localhost:3333';
-let allProducts = [];
 
-// Carregar tema salvo
-const html = document.documentElement;
-const savedTheme = localStorage.getItem('theme') || 'light';
-html.setAttribute('data-theme', savedTheme);
-updateThemeIcon(savedTheme);
-
-// Alternar tema
-document.getElementById('themeToggle').addEventListener('click', () => {
+// Theme Toggle
+function toggleTheme() {
+    const html = document.documentElement;
     const currentTheme = html.getAttribute('data-theme');
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     
     html.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
-    updateThemeIcon(newTheme);
+}
+
+// Load theme on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    // Load products if on produtos page
+    if (document.getElementById('productsGrid')) {
+        loadProducts();
+    }
 });
 
-function updateThemeIcon(theme) {
-    document.getElementById('themeToggle').textContent = theme === 'light' ? '🌙' : '☀️';
-}
-
-// Carregar produtos
-async function loadProdutos() {
-    const productsGrid = document.getElementById('productsGrid');
-    const emptyState = document.getElementById('emptyState');
-
-    if (allProducts.length === 0) {
+// Load Products
+async function loadProducts() {
+    try {
         const response = await fetch(`${API_URL}/produtos`);
-        if (response.ok) {
-            const data = await response.json();
-            allProducts = data.produtos || [];
-        } else {
-            console.error('Erro ao carregar produtos');
-            allProducts = [];
-        }
-    }
-
-    if (allProducts.length === 0) {
-        productsGrid.style.display = 'none';
-        emptyState.style.display = 'block';
-    } else {
-        productsGrid.style.display = 'grid';
-        emptyState.style.display = 'none';
-        renderProdutos(allProducts);
-        populateCategories();
+        const data = await response.json();
+        
+        displayProducts(data.produtos || []);
+        populateCategories(data.produtos || []);
+    } catch (error) {
+        console.error('Erro ao carregar produtos:', error);
+        document.getElementById('productsGrid').innerHTML = 
+            '<p style="grid-column: 1/-1; color: red;">Erro ao carregar produtos</p>';
     }
 }
 
-function renderProdutos(produtos) {
-    const productsGrid = document.getElementById('productsGrid');
-    productsGrid.innerHTML = '';
-
-    if (produtos.length === 0) {
-        document.getElementById('emptyState').style.display = 'block';
-        productsGrid.style.display = 'none';
+// Display Products
+function displayProducts(products) {
+    const grid = document.getElementById('productsGrid');
+    const emptyState = document.getElementById('emptyState');
+    
+    if (products.length === 0) {
+        grid.style.display = 'none';
+        emptyState.style.display = 'block';
         return;
     }
-
-    produtos.forEach(produto => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-            <div class="product-header">📦</div>
-            <div class="product-body">
-                <h3 class="product-name">${produto.nome}</h3>
-                <span class="product-category">${produto.categoria}</span>
-                <p class="product-description">${produto.descricao}</p>
-                <p class="product-price">R$ ${parseFloat(produto.preco).toFixed(2)}</p>
-                <button class="btn-add-cart">Adicionar ao Carrinho</button>
+    
+    grid.style.display = 'grid';
+    emptyState.style.display = 'none';
+    
+    grid.innerHTML = products.map(product => `
+        <div class="produto-card">
+            <div class="produto-header">
+                <span class="produto-categoria">${product.category || 'Sem categoria'}</span>
+                <span class="produto-nome">${product.name || 'Sem nome'}</span>
             </div>
-        `;
-        productsGrid.appendChild(card);
-    });
+            <div class="produto-info">
+                <p class="produto-descricao">${(product.description || 'Sem descrição').substring(0, 100)}...</p>
+                <p class="produto-preco">R$ ${parseFloat(product.price || 0).toFixed(2).replace('.', ',')}</p>
+            </div>
+        </div>
+    `).join('');
 }
 
-function populateCategories() {
-    const categoryFilter = document.getElementById('categoryFilter');
-    const categories = [...new Set(allProducts.map(p => p.categoria))];
+// Populate Category Filter
+function populateCategories(products) {
+    const select = document.getElementById('categoryFilter');
+    if (!select) return;
+    
+    const categories = [...new Set(products.map(p => p.category))].filter(Boolean);
     
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
         option.textContent = category;
-        categoryFilter.appendChild(option);
+        select.appendChild(option);
     });
 }
 
-// Filtrar por categoria
-document.getElementById('categoryFilter').addEventListener('change', (e) => {
-    filterProducts();
-});
-
-// Buscar produtos
-document.getElementById('searchInput').addEventListener('input', (e) => {
-    filterProducts();
-});
-
-function filterProducts() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const categoryTerm = document.getElementById('categoryFilter').value;
-
-    const filtered = allProducts.filter(produto => {
-        const matchSearch = produto.nome.toLowerCase().includes(searchTerm) || 
-                          produto.descricao.toLowerCase().includes(searchTerm);
-        const matchCategory = categoryTerm === '' || produto.categoria === categoryTerm;
+// Filter by Category
+async function filterByCategory() {
+    const category = document.getElementById('categoryFilter').value;
+    
+    try {
+        const response = await fetch(`${API_URL}/produtos`);
+        const data = await response.json();
         
-        return matchSearch && matchCategory;
-    });
-
-    renderProdutos(filtered);
+        let filtered = data.produtos || [];
+        if (category) {
+            filtered = filtered.filter(p => p.category === category);
+        }
+        
+        displayProducts(filtered);
+    } catch (error) {
+        console.error('Erro ao filtrar:', error);
+    }
 }
 
-// Carregar produtos ao abrir a página
-loadProdutos();
-
-// Atualizar link ativo na navegação
-document.querySelectorAll('.nav-link').forEach(link => {
-    if (link.href === window.location.href) {
-        link.classList.add('active');
-    } else {
-        link.classList.remove('active');
+// Handle Form Submit
+async function handleSubmit(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('name')?.value;
+    const price = document.getElementById('price')?.value;
+    const category = document.getElementById('category')?.value;
+    const description = document.getElementById('description')?.value;
+    
+    if (!name || !price || !category || !description) {
+        showError('Todos os campos são obrigatórios');
+        return;
     }
-});
+    
+    try {
+        const response = await fetch(`${API_URL}/produtos`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                price: parseFloat(price),
+                category,
+                description
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.sucesso) {
+            showSuccess(`Produto "${name}" cadastrado com sucesso!`);
+            document.getElementById('productForm').reset();
+            
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'produtos.html';
+            }, 2000);
+        } else {
+            showError(data.mensagem || 'Erro ao cadastrar produto');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showError('Erro ao conectar com o servidor');
+    }
+}
+
+// Show Success Message
+function showSuccess(message) {
+    const alert = document.getElementById('successAlert');
+    if (alert) {
+        document.getElementById('successMessage').textContent = message;
+        alert.style.display = 'block';
+    }
+}
+
+// Show Error Message
+function showError(message) {
+    const alert = document.getElementById('errorAlert');
+    if (alert) {
+        document.getElementById('errorMessage').textContent = message;
+        alert.style.display = 'block';
+    }
+}

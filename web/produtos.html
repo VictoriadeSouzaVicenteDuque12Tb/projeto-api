@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos - Victoria Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header/Navbar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h1>🛍️ Victoria Store</h1>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="produtos.html" class="active">Produtos</a>
+                <a href="cadastro.html">Cadastrar</a>
+            </nav>
+            <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+        </div>
+    </header>
+
+    <!-- Produtos Section -->
+    <section class="produtos-container">
+        <div class="produtos-header">
+            <h2>Nossos Produtos</h2>
+            <div class="filter-container">
+                <select id="categoryFilter" onchange="filterByCategory()">
+                    <option value="">Todas as categorias</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="productsGrid" class="produtos-grid">
+            <p style="grid-column: 1/-1; text-align: center; color: #6b7280;">Carregando produtos...</p>
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <h3>Nenhum produto encontrado</h3>
+            <p>Experimente adicionar novos produtos ou filtrar de outra forma.</p>
+            <a href="cadastro.html" class="cta-btn" style="display: inline-block; margin-top: 1rem;">+ Adicionar Produto</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Victoria Store. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
