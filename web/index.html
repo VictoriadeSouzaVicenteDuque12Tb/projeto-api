@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Produto - StoreHub</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>🛍️ StoreHub</h1>
+            </div>
+            <nav class="nav">
+                <a href="../index.html" class="nav-link">Início</a>
+                <a href="../produtos/index.html" class="nav-link">Produtos</a>
+                <a href="index.html" class="nav-link active">Cadastrar</a>
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="cadastro-section">
+            <div class="container">
+                <div class="form-container">
+                    <h1>Cadastrar Novo Produto</h1>
+                    <p class="form-subtitle">Preencha os dados abaixo para adicionar um novo produto</p>
+
+                    <form id="produtoForm" class="form">
+                        <div class="form-group">
+                            <label for="nome">Nome do Produto *</label>
+                            <input 
+                                type="text" 
+                                id="nome" 
+                                name="nome" 
+                                placeholder="Digite o nome do produto"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="preco">Preço (R$) *</label>
+                                <input 
+                                    type="number" 
+                                    id="preco" 
+                                    name="preco" 
+                                    placeholder="0.00"
+                                    step="0.01"
+                                    min="0"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="categoria">Categoria *</label>
+                                <select id="categoria" name="categoria" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Eletrônicos">Eletrônicos</option>
+                                    <option value="Roupas">Roupas</option>
+                                    <option value="Casa">Casa e Decoração</option>
+                                    <option value="Esportes">Esportes</option>
+                                    <option value="Livros">Livros</option>
+                                    <option value="Alimentos">Alimentos</option>
+                                    <option value="Beleza">Beleza e Higiene</option>
+                                    <option value="Brinquedos">Brinquedos</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descricao">Descrição do Produto *</label>
+                            <textarea 
+                                id="descricao" 
+                                name="descricao" 
+                                placeholder="Digite uma descrição detalhada do produto"
+                                rows="5"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-submit">
+                                ✓ Cadastrar Produto
+                            </button>
+                            <button type="reset" class="btn btn-reset">
+                                ↻ Limpar Formulário
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="alert alert-success" id="successMessage" style="display: none;">
+                        <span class="alert-icon">✓</span>
+                        <div>
+                            <h4>Sucesso!</h4>
+                            <p id="successText"></p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-error" id="errorMessage" style="display: none;">
+                        <span class="alert-icon">✕</span>
+                        <div>
+                            <h4>Erro!</h4>
+                            <p id="errorText"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 StoreHub. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
