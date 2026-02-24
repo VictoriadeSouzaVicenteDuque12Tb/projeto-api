@@ -30,22 +30,26 @@ const pool = mysql.createPool({
 
 // Rota para cadastrar produto
 app.post('/produtos', async (req, res) => {
-  const { nome, preco, categoria, descricao } = req.body
+  // Accept either English or Portuguese field names
+  const name = req.body.name || req.body.nome
+  const price = req.body.price || req.body.preco
+  const category = req.body.category || req.body.categoria
+  const description = req.body.description || req.body.descricao
 
   // Validação dos dados
-  if (!nome || !preco || !categoria || !descricao) {
+  if (!name || !price || !category || !description) {
     return res.status(400).json({
       sucesso: false,
-      mensagem: 'Nome, preço, categoria e descrição são obrigatórios'
+      mensagem: 'name/price/category/description são obrigatórios'
     })
   }
 
-  // Executar query de inserção
+  // Executar query de inserção na tabela products_victoria (preenche colunas em pt/br e en)
   const connection = await pool.getConnection()
   if (connection) {
     const result = await connection.execute(
-      'INSERT INTO produtos (nome, preco, categoria, descricao) VALUES (?, ?, ?, ?)',
-      [nome, preco, categoria, descricao]
+      'INSERT INTO products_victoria (nome, preco, categoria, descricao, `name`, price, `category`, `description`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [name, price, category, description, name, price, category, description]
     )
     connection.release()
 
@@ -54,10 +58,11 @@ app.post('/produtos', async (req, res) => {
         sucesso: true,
         mensagem: 'Produto cadastrado com sucesso!',
         produto: {
-          nome,
-          preco,
-          categoria,
-          descricao
+          id: result[0].insertId,
+          name,
+          price,
+          category,
+          description
         }
       })
     }
@@ -74,7 +79,7 @@ app.get('/produtos', async (req, res) => {
   const connection = await pool.getConnection()
   if (connection) {
     const [produtos] = await connection.execute(
-      'SELECT nome, preco, categoria, descricao FROM produtos'
+      'SELECT id, `name` AS name, price, `category` AS category, `description` AS description FROM products_victoria'
     )
     connection.release()
 
