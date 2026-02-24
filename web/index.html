@@ -3,123 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Produto - StoreHub</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>Victoria Store - Loja Online</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="header">
         <div class="container">
             <div class="logo">
-                <h1>🛍️ StoreHub</h1>
+                <h1>🛍️ Victoria Store</h1>
             </div>
             <nav class="nav">
-                <a href="../index.html" class="nav-link">Início</a>
-                <a href="../produtos/index.html" class="nav-link">Produtos</a>
-                <a href="index.html" class="nav-link active">Cadastrar</a>
                 <button class="theme-toggle" id="themeToggle">🌙</button>
             </nav>
         </div>
     </header>
-
     <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h2>Bem-vindo à Victoria Store</h2>
+                <p>Gerencie seus produtos de forma prática e rápida</p>
+            </div>
+        </section>
+
+        <!-- Produtos Section -->
+        <section class="produtos-section">
+            <div class="container">
+                <h2>Nossos Produtos</h2>
+                <div id="produtosList" class="produtos-grid">
+                    <p class="loading">Carregando produtos...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cadastro Section -->
         <section class="cadastro-section">
             <div class="container">
-                <div class="form-container">
-                    <h1>Cadastrar Novo Produto</h1>
-                    <p class="form-subtitle">Preencha os dados abaixo para adicionar um novo produto</p>
+                <div class="form-wrapper">
+                    <h2>Cadastrar Novo Produto</h2>
+                    
+                    <div id="successAlert" class="alert alert-success" style="display: none;">
+                        <span>✓</span> <span id="successText"></span>
+                    </div>
+                    
+                    <div id="errorAlert" class="alert alert-error" style="display: none;">
+                        <span>✕</span> <span id="errorText"></span>
+                    </div>
 
                     <form id="produtoForm" class="form">
                         <div class="form-group">
                             <label for="nome">Nome do Produto *</label>
-                            <input 
-                                type="text" 
-                                id="nome" 
-                                name="nome" 
-                                placeholder="Digite o nome do produto"
-                                required
-                            >
+                            <input type="text" id="nome" name="nome" placeholder="Ex: Notebook Dell" required>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="preco">Preço (R$) *</label>
-                                <input 
-                                    type="number" 
-                                    id="preco" 
-                                    name="preco" 
-                                    placeholder="0.00"
-                                    step="0.01"
-                                    min="0"
-                                    required
-                                >
+                                <input type="number" id="preco" name="preco" placeholder="0.00" step="0.01" min="0" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="categoria">Categoria *</label>
                                 <select id="categoria" name="categoria" required>
-                                    <option value="">Selecione uma categoria</option>
+                                    <option value="">Selecione...</option>
                                     <option value="Eletrônicos">Eletrônicos</option>
                                     <option value="Roupas">Roupas</option>
-                                    <option value="Casa">Casa e Decoração</option>
+                                    <option value="Casa">Casa</option>
                                     <option value="Esportes">Esportes</option>
                                     <option value="Livros">Livros</option>
                                     <option value="Alimentos">Alimentos</option>
-                                    <option value="Beleza">Beleza e Higiene</option>
+                                    <option value="Beleza">Beleza</option>
                                     <option value="Brinquedos">Brinquedos</option>
-                                    <option value="Outros">Outros</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="descricao">Descrição do Produto *</label>
-                            <textarea 
-                                id="descricao" 
-                                name="descricao" 
-                                placeholder="Digite uma descrição detalhada do produto"
-                                rows="5"
-                                required
-                            ></textarea>
+                            <label for="descricao">Descrição *</label>
+                            <textarea id="descricao" name="descricao" placeholder="Descreva o produto..." rows="4" required></textarea>
                         </div>
 
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-submit">
-                                ✓ Cadastrar Produto
-                            </button>
-                            <button type="reset" class="btn btn-reset">
-                                ↻ Limpar Formulário
-                            </button>
+                            <button type="submit" class="btn btn-primary">✓ Cadastrar</button>
+                            <button type="reset" class="btn btn-secondary">↻ Limpar</button>
                         </div>
                     </form>
-
-                    <div class="alert alert-success" id="successMessage" style="display: none;">
-                        <span class="alert-icon">✓</span>
-                        <div>
-                            <h4>Sucesso!</h4>
-                            <p id="successText"></p>
-                        </div>
-                    </div>
-
-                    <div class="alert alert-error" id="errorMessage" style="display: none;">
-                        <span class="alert-icon">✕</span>
-                        <div>
-                            <h4>Erro!</h4>
-                            <p id="errorText"></p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 StoreHub. Todos os direitos reservados.</p>
-        </div>
+        <p>&copy; 2026 Victoria Store. Todos os direitos reservados.</p>
     </footer>
 
-    <script src="../script.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
